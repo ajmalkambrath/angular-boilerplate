@@ -1,6 +1,6 @@
 # Angular Boilerplate
 
-A web suite developed in Angular 13 framework.
+B2B coding test using Angular 13 framework.
 
 ## Tech Stack
 - Angular 13
