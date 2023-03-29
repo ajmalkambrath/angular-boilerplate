@@ -3,20 +3,19 @@ import { DataObject } from 'src/app/common/models/worker-response.model';
 import { DashboardService } from '../services/dashboard.service';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  selector: 'app-dashboard-2',
+  templateUrl: './dashboard-2.component.html',
+  styleUrls: ['./dashboard-2.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class Dashboard2Component implements OnInit {
   additionalIds: string = '';
   interval = this.dashboardService.interval;
   size = this.dashboardService.size;
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(private dashboardService: DashboardService) { }
 
   ngOnInit() {
-    this.startWorker()
-    this.onAdditionalArrayIdsChange(this.additionalIds); // Initalizing additionalIds in case of first call
+    this.dashboardService.init();
   }
 
   get data() {
@@ -24,28 +23,30 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * used to start worker
+   * used to update worker when interval or size change
    * @param none
    * @returns none
    */
-  startWorker(): void {
-    this.dashboardService.init(this.interval, this.size);
+  updateWorker(): void {
+    this.dashboardService.updateInterval(this.interval, this.size);
   }
+
   /**
-   * used to stop worker
+   * used to stop worker from UI
    * @param none
    * @returns none
    */
   stopWorker(): void {
     this.dashboardService?.stopWorker();
   }
+
   /**
    * used to set additional array  value chnage
    * @param additionalArrayIds: string
    * @returns none
    */
-  onAdditionalArrayIdsChange(additionalArrayIds: string) {
-    this.dashboardService.setAdditionalArrayIds(additionalArrayIds);
+  onAdditionalArrayIdsChange(additionalArrayIds: string): void {
+    this.dashboardService.setAdditionalArrayIds(additionalArrayIds)
   }
 
   trackByFn(index: number, item: DataObject): string {

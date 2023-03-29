@@ -1,1 +1,0 @@
-export const GIT_USER_URL = '/users/ajmalkambrath/repos';
