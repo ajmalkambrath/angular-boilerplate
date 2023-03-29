@@ -1,4 +1,4 @@
-# Angular Boilerplate
+# B2B coding test
 
 B2B coding test using Angular 13 framework.
 
