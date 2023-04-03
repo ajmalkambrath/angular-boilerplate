@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { DataObject } from 'src/app/common/models/worker-response.model';
 import { DashboardService } from '../services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard-2',
   templateUrl: './dashboard-2.component.html',
-  styleUrls: ['./dashboard-2.component.scss']
+  styleUrls: ['./dashboard-2.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Dashboard2Component implements OnInit {
+export class Dashboard2Component implements OnInit, OnDestroy {
   additionalIds: string = '';
   interval = this.dashboardService.interval;
   size = this.dashboardService.size;

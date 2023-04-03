@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { DataObject } from 'src/app/common/models/worker-response.model';
 import { DashboardService } from '../services/dashboard.service';
 
@@ -6,8 +6,9 @@ import { DashboardService } from '../services/dashboard.service';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   additionalIds: string = '';
   interval = this.dashboardService.interval;
   size = this.dashboardService.size;
@@ -16,7 +17,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.startWorker()
-    this.onAdditionalArrayIdsChange(this.additionalIds); // Initalizing additionalIds in case of first call
+    this.onAdditionalArrayIdsChange(this.additionalIds); // Initializing additionalIds in case of first call
   }
 
   get data() {
