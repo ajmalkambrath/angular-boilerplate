@@ -1,4 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { combineLatest, debounceTime, distinctUntilChanged, startWith } from 'rxjs';
 import { DataObject } from 'src/app/common/models/worker-response.model';
 import { DashboardService } from '../services/dashboard.service';
 
@@ -9,15 +11,14 @@ import { DashboardService } from '../services/dashboard.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  additionalIds: string = '';
-  interval = this.dashboardService.interval;
-  size = this.dashboardService.size;
-
-  constructor(private dashboardService: DashboardService) {}
+  dataForm: FormGroup;
+  constructor(
+    private fb: FormBuilder,
+    private dashboardService: DashboardService) { }
 
   ngOnInit() {
-    this.startWorker()
-    this.onAdditionalArrayIdsChange(this.additionalIds); // Initializing additionalIds in case of first call
+    this.dashboardService.startWorker();
+    this.loadComponentInitData();
   }
 
   get data() {
@@ -25,28 +26,55 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * used to start worker
+   * used to load component initializing data
    * @param none
    * @returns none
    */
-  startWorker(): void {
-    this.dashboardService.init(this.interval, this.size);
+  loadComponentInitData(): void {
+    this.createForm();
+    this.handleFormChanges();
   }
+
   /**
-   * used to stop worker
+   * used to create form elements
    * @param none
    * @returns none
    */
-  stopWorker(): void {
-    this.dashboardService?.stopWorker();
+  createForm(): void {
+    this.dataForm = this.fb.group({
+      timer: [this.dashboardService.interval],
+      arraySize: [this.dashboardService.size],
+      additionalIds: ''
+    });
   }
+
   /**
-   * used to set additional array  value chnage
-   * @param additionalArrayIds: string
+   * used to handle form changes for dataForm
+   * @param none
    * @returns none
    */
-  onAdditionalArrayIdsChange(additionalArrayIds: string) {
-    this.dashboardService.setAdditionalArrayIds(additionalArrayIds);
+  handleFormChanges(): void {
+    const timerControl = this.dataForm.get('timer');
+    const arraySizeControl = this.dataForm.get('arraySize');
+
+    combineLatest([
+      this.dataForm.get('timer')?.valueChanges
+        .pipe(startWith(this.dashboardService.interval)),
+      this.dataForm.get('arraySize')?.valueChanges
+        .pipe(startWith(this.dashboardService.size))
+    ])
+      .pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+      ).subscribe((response) => {
+        this.dashboardService.startWorker(timerControl?.value, arraySizeControl?.value)
+      });
+
+    this.dataForm.get('additionalIds')?.valueChanges
+      .pipe(
+        debounceTime(200),
+        distinctUntilChanged()
+      ).subscribe((additionalIds) => this.dashboardService.setAdditionalArrayIds(additionalIds));
   }
 
   trackByFn(index: number, item: DataObject): string {
@@ -55,6 +83,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // Terminate the web-worker when the component is destroyed
-    this.stopWorker();
+    this.dashboardService?.stopWorker();
   }
 }

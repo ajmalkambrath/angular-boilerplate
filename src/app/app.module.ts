@@ -6,7 +6,6 @@ import 'reflect-metadata';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CommonAppModule } from './common/common-app.module';
 @NgModule({
   declarations: [
     AppComponent
@@ -15,8 +14,7 @@ import { CommonAppModule } from './common/common-app.module';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    BrowserAnimationsModule,
-    CommonAppModule
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
