@@ -18,21 +18,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dashboardService.startWorker();
-    this.loadComponentInitData();
+    this.createForm();
+    this.handleFormChanges();
   }
 
   get data() {
     return this.dashboardService.getData();
-  }
-
-  /**
-   * used to load component initializing data
-   * @param none
-   * @returns none
-   */
-  loadComponentInitData(): void {
-    this.createForm();
-    this.handleFormChanges();
   }
 
   /**
